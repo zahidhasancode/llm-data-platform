@@ -1,0 +1,8 @@
+# Dataset config: support Q&A dataset
+# Used by build_dataset_from_config in src/data/pipeline.py
+
+source: support
+input_path: data/raw/support_export.csv
+min_length: 10
+remove_duplicates: true
+version_name: support_v1
