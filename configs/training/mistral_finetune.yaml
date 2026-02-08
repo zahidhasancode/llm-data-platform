@@ -1,0 +1,8 @@
+# Training config: Mistral 7B fine-tune
+# Used by load_training_config in src/training/config.py
+
+base_model: mistral-7b
+dataset_version: dataset_v1
+learning_rate: 2e-5
+epochs: 3
+batch_size: 4
