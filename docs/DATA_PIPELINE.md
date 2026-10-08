@@ -23,7 +23,7 @@ Ingestion loads a file and normalizes it into a single in-memory structure. No c
 **Supported formats**
 
 - **JSON**: File must be a JSON array. Each element must be an object with `"input"` and `"output"` string keys. Format is detected by `.json` extension.
-- **CSV**: Header row expected. Prefers columns named `input` and `output` (case-insensitive); if missing, the first two columns are used as input and output. Format is detected by `.csv` extension.
+- **CSV**: Header row expected. Prefers columns named `input` and `output` (case-insensitive); a role with no named column takes the first remaining column, so a header with neither name uses the first two columns. A CSV with fewer than two columns raises `ValueError`. Format is detected by `.csv` extension.
 - **Plain text**: One sample per line. If a line contains a tab, the line is split on the first tab into input (before) and output (after). Otherwise the full line is input and output is empty. Format is detected by `.txt` or `.text` extension.
 
 **Normalized sample structure**

@@ -50,6 +50,25 @@ def _load_json(path: str, source: str) -> list[Sample]:
     return samples
 
 
+def _pick_csv_columns(fieldnames: list[str]) -> tuple[str, str]:
+    """
+    Choose the input and output columns: columns named `input` / `output`
+    (case-insensitive) win; any role left unnamed takes the first remaining
+    column in header order. Input and output are always different columns.
+    """
+    key_lower = {f.lower(): f for f in fieldnames}
+    input_col = key_lower.get("input")
+    output_col = key_lower.get("output")
+    remaining = [f for f in fieldnames if f not in (input_col, output_col)]
+    if input_col is None and remaining:
+        input_col = remaining.pop(0)
+    if output_col is None and remaining:
+        output_col = remaining.pop(0)
+    if not input_col or not output_col:
+        raise ValueError("CSV must have 'input' and 'output' columns or at least two columns")
+    return input_col, output_col
+
+
 def _load_csv(path: str, source: str) -> list[Sample]:
     with open(path, encoding="utf-8", newline="") as f:
         reader = csv.DictReader(f)
@@ -57,11 +76,7 @@ def _load_csv(path: str, source: str) -> list[Sample]:
         rows = list(reader)
     if not rows:
         return []
-    key_lower = {f.lower(): f for f in fieldnames}
-    input_col = key_lower.get("input", fieldnames[0] if fieldnames else "")
-    output_col = key_lower.get("output", fieldnames[1] if len(fieldnames) > 1 else fieldnames[0])
-    if not input_col or not output_col:
-        raise ValueError("CSV must have 'input' and 'output' columns or at least two columns")
+    input_col, output_col = _pick_csv_columns(fieldnames)
     samples = []
     for i, row in enumerate(rows):
         inp = row.get(input_col, "")
