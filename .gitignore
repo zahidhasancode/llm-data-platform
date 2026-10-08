@@ -1,0 +1,24 @@
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+
+# Virtual environments and local secrets
+.venv/
+venv/
+.env
+.env.*
+
+# Editor backups and OS files
+*.save
+*.swp
+*~
+.DS_Store
+.idea/
+.vscode/
+
+# Generated pipeline output and local data (never commit datasets or models)
+/artifacts/
+/data/
