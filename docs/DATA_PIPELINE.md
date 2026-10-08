@@ -1,6 +1,6 @@
 # Data Pipeline
 
-Internal documentation for the LLM Data Platform data pipeline. Describes how raw data is ingested, cleaned, filtered, versioned, and built from config.
+How the data pipeline in this prototype works: how raw data is ingested, cleaned, filtered, versioned, and built from config.
 
 ---
 

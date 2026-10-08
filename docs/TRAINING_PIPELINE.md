@@ -1,6 +1,6 @@
 # Training Pipeline
 
-Internal documentation for the LLM Data Platform training pipeline. Describes configuration, training, registration, evaluation, and the end-to-end flow from config to evaluation results.
+How the training pipeline in this prototype works: configuration, training, registration, evaluation, and the end-to-end flow from config to evaluation results.
 
 ---
 
@@ -80,9 +80,9 @@ The registry file (by default `artifacts/models/registry.json`) is a single JSON
   "models": [
     {
       "model_version": "model_v1",
-      "dataset_version": "dataset_v1",
+      "dataset_version": "support_example_v1",
       "base_model": "mistral-7b",
-      "num_training_samples": 45231,
+      "num_training_samples": 5,
       "training_config": { ... }
     }
   ]
