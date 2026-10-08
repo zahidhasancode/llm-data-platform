@@ -1,0 +1,11 @@
+# Dataset config for the toy example in examples/support_sample.csv
+# (nine hand-written rows; see README "Quick start").
+# Used by build_dataset_from_config in src/data/pipeline.py
+
+source: support_example
+input_path: examples/support_sample.csv
+min_length: 10
+remove_duplicates: true
+filter_noise: true
+noise_max_repeat: 10
+version_name: support_example_v1

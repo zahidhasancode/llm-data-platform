@@ -1,0 +1,10 @@
+# Training config for the toy example dataset built from
+# configs/datasets/example_support.yaml. Training is simulated: no model
+# is downloaded or trained (see README "Limitations").
+# Used by load_training_config in src/training/config.py
+
+base_model: mistral-7b
+dataset_version: support_example_v1
+learning_rate: 2e-5
+epochs: 3
+batch_size: 4
