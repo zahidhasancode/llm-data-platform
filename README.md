@@ -158,3 +158,7 @@ GitHub Actions (`.github/workflows/ci.yml`) runs `ruff check .` and `pytest` on 
 ## Tech used
 
 Python 3.11, standard library (`csv`, `json`, `hashlib`, `dataclasses`, `pathlib`, `re`), PyYAML, pytest, ruff, GitHub Actions.
+
+## Licence
+
+MIT. See `LICENSE`.
