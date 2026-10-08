@@ -6,16 +6,14 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from . import ingestion
-from . import filtering
-from . import versioning
+from . import filtering, ingestion, versioning
 
 
 def _load_yaml_config(config_path: str) -> dict:
     try:
         import yaml
     except ImportError:
-        raise ImportError("PyYAML is required for pipeline. Install with: pip install pyyaml")
+        raise ImportError("PyYAML is required for pipeline. Install with: pip install pyyaml") from None
     path = Path(config_path)
     if not path.exists():
         raise FileNotFoundError(f"Config file not found: {config_path}")

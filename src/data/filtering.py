@@ -6,8 +6,8 @@ from __future__ import annotations
 
 import re
 
-from .ingestion import Sample
 from . import cleaning
+from .ingestion import Sample
 
 
 def filter_by_min_length(samples: list[Sample], min_length: int) -> list[Sample]:

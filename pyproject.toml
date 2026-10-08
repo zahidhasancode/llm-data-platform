@@ -2,3 +2,11 @@
 # Tests import the package as `src.*` from the repository root.
 pythonpath = ["."]
 testpaths = ["tests"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 120
+
+[tool.ruff.lint]
+# pycodestyle, pyflakes, import order, bugbear
+select = ["E", "F", "W", "I", "B"]

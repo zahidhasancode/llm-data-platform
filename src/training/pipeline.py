@@ -9,8 +9,7 @@ import json
 from pathlib import Path
 
 from ..evaluation.evaluator import evaluate_model
-from . import registry
-from . import trainer
+from . import registry, trainer
 
 MODELS_DIR = "artifacts/models"
 REGISTRY_PATH = "artifacts/models/registry.json"

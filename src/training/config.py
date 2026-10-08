@@ -8,7 +8,6 @@ from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
 
-
 REQUIRED_FIELDS = ("base_model", "dataset_version", "learning_rate", "epochs", "batch_size")
 
 
@@ -83,7 +82,7 @@ def load_training_config(path: str) -> TrainingConfig:
     try:
         import yaml
     except ImportError:
-        raise ImportError("PyYAML is required. Install with: pip install pyyaml")
+        raise ImportError("PyYAML is required. Install with: pip install pyyaml") from None
 
     p = Path(path)
     if not p.exists():

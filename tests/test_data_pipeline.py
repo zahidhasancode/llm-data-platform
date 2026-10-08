@@ -6,15 +6,11 @@ Run with: pytest tests/test_data_pipeline.py -v
 from __future__ import annotations
 
 import json
-import tempfile
 from pathlib import Path
 
-import pytest
-
+from src.data.cleaning import remove_duplicate_samples, remove_empty_samples
 from src.data.ingestion import Sample, load_dataset
-from src.data.cleaning import remove_empty_samples, remove_duplicate_samples
 from src.data.versioning import create_dataset_version
-
 
 # --- Ingestion tests ---
 
