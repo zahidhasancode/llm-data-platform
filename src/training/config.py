@@ -37,12 +37,10 @@ class TrainingConfig:
             raise ValueError("base_model must be a non-empty string")
         if not isinstance(dataset_version, str) or not dataset_version.strip():
             raise ValueError("dataset_version must be a non-empty string")
-        if not isinstance(learning_rate, (int, float)):
-            raise ValueError("learning_rate must be a number")
-        learning_rate = float(learning_rate)
-        if not isinstance(epochs, int) or epochs < 1:
+        learning_rate = _parse_learning_rate(learning_rate)
+        if not _is_int(epochs) or epochs < 1:
             raise ValueError("epochs must be a positive integer")
-        if not isinstance(batch_size, int) or batch_size < 1:
+        if not _is_int(batch_size) or batch_size < 1:
             raise ValueError("batch_size must be a positive integer")
 
         return cls(
@@ -52,6 +50,30 @@ class TrainingConfig:
             epochs=epochs,
             batch_size=batch_size,
         )
+
+
+def _is_int(value: object) -> bool:
+    # bool is a subclass of int in Python; `epochs: true` is not a valid epoch count.
+    return isinstance(value, int) and not isinstance(value, bool)
+
+
+def _parse_learning_rate(value: object) -> float:
+    """
+    Return the learning rate as a float.
+
+    PyYAML follows YAML 1.1, which reads exponent notation without a dot
+    (e.g. `2e-5`) as a string, so numeric strings are accepted too.
+    """
+    if isinstance(value, bool):
+        raise ValueError("learning_rate must be a number")
+    if isinstance(value, (int, float)):
+        return float(value)
+    if isinstance(value, str):
+        try:
+            return float(value)
+        except ValueError:
+            pass
+    raise ValueError("learning_rate must be a number")
 
 
 def load_training_config(path: str) -> TrainingConfig:
