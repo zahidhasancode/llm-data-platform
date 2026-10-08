@@ -30,6 +30,11 @@ def _load_json(path: str, source: str) -> list[Sample]:
             raise ValueError(f"JSON item at index {i} must be an object")
         inp = item.get("input", "")
         out = item.get("output", "")
+        # JSON null means "missing", not the text "None".
+        if inp is None:
+            inp = ""
+        if out is None:
+            out = ""
         if not isinstance(inp, str):
             inp = str(inp)
         if not isinstance(out, str):
