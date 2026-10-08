@@ -33,11 +33,19 @@ def _save_registry(registry_path: str, data: dict) -> None:
 
 def register_model(model_metadata: dict, registry_path: str) -> None:
     """
-    Append a model entry to the registry and save.
+    Add a model entry to the registry and save.
+    If an entry with the same model_version exists it is replaced in place,
+    so re-running a model version never leaves a stale duplicate behind.
     Creates the registry file and parent directories if they do not exist.
     """
     data = _load_registry(registry_path)
-    data["models"].append(model_metadata)
+    version = model_metadata.get("model_version")
+    for i, existing in enumerate(data["models"]):
+        if isinstance(existing, dict) and version is not None and existing.get("model_version") == version:
+            data["models"][i] = model_metadata
+            break
+    else:
+        data["models"].append(model_metadata)
     _save_registry(registry_path, data)
 
 

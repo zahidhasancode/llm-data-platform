@@ -89,7 +89,7 @@ The registry file (by default `artifacts/models/registry.json`) is a single JSON
 }
 ```
 
-Each entry in `models` is the full metadata dict that was written to that model’s `metadata.json`. New models are appended. If the file does not exist, it is created when the first model is registered. Functions: `register_model(metadata, registry_path)`, `list_models(registry_path)`, `get_model(model_version, registry_path)`.
+Each entry in `models` is the full metadata dict that was written to that model’s `metadata.json`. New models are appended; registering a `model_version` that is already present replaces its entry in place. If the file does not exist, it is created when the first model is registered. Functions: `register_model(metadata, registry_path)`, `list_models(registry_path)`, `get_model(model_version, registry_path)`.
 
 ---
 
