@@ -1,6 +1,2 @@
-fastapi
-uvicorn
-sqlalchemy
-pydantic
-psycopg2-binary
-pytest
+# Runtime: YAML configs for the dataset and training pipelines.
+PyYAML>=6.0

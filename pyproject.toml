@@ -1,0 +1,4 @@
+[tool.pytest.ini_options]
+# Tests import the package as `src.*` from the repository root.
+pythonpath = ["."]
+testpaths = ["tests"]
