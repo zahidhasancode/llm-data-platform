@@ -9,10 +9,10 @@ from __future__ import annotations
 import json
 import logging
 import os
-import subprocess
 from datetime import datetime, timedelta
 from pathlib import Path
 
+import boto3
 from airflow.decorators import dag, task
 from airflow.exceptions import AirflowSkipException
 
@@ -43,10 +43,11 @@ def text2sql_pipeline():
         """Copy one run's results and adapter from S3."""
         run = params["run"]
         target = Path("/tmp/runs") / run
-        subprocess.run(
-            ["aws", "s3", "sync", f"s3://{BUCKET}/runs/{run}", str(target), "--only-show-errors"],
-            check=True,
-        )
+        bucket = boto3.resource("s3").Bucket(BUCKET)
+        for item in bucket.objects.filter(Prefix=f"runs/{run}/"):
+            path = target / item.key.removeprefix(f"runs/{run}/")
+            path.parent.mkdir(parents=True, exist_ok=True)
+            bucket.download_file(item.key, str(path))
         if not (target / "results" / "metrics.json").exists():
             raise FileNotFoundError(f"No results in s3://{BUCKET}/runs/{run}")
         return str(target)
