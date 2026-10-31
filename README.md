@@ -12,6 +12,7 @@ This is a **prototype**, not a working training system.
 | Cleaning and filtering (empty, duplicate, length, noise rules) | Works, tested |
 | Dataset versioning with SHA-256 content hash | Works, tested |
 | Config-driven dataset build from YAML | Works, tested |
+| Spark job: clean, reject with a reason, deduplicate, split, version | Works, tested on 6,000 real rows ([results](results/data_text2sql.json)) |
 | Training config loading and validation | Works, tested |
 | Model registry (JSON file) | Works, tested |
 | Training | **Simulated.** No model is downloaded or trained. Only metadata is written. |
