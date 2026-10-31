@@ -9,7 +9,7 @@ pytest.importorskip("mlflow")
 
 from mlflow.tracking import MlflowClient  # noqa: E402
 
-from src.finetune.tracking import MODEL_NAME, compare_runs, log_run  # noqa: E402
+from src.finetune.tracking import MODEL_NAME, champion_accuracy, compare_runs, log_run, promote  # noqa: E402
 
 
 def results(root: Path, dataset: str, base: float, qlora: float) -> tuple[str, str]:
@@ -75,3 +75,18 @@ def test_results_without_a_dataset_hash_are_refused(tmp_path: Path, uri: str) ->
     result, adapter = results(tmp_path / "a", "", 60.0, 70.0)
     with pytest.raises(ValueError, match="no dataset hash"):
         log_run(result, adapter, uri, "bad")
+
+
+def test_no_champion_at_first(tmp_path: Path, uri: str) -> None:
+    assert champion_accuracy(uri) is None
+    log_run(*results(tmp_path / "a", "h", 60.0, 70.0), uri, "first")
+    assert champion_accuracy(uri) is None
+
+
+def test_promote_sets_the_champion(tmp_path: Path, uri: str) -> None:
+    first = log_run(*results(tmp_path / "a", "h", 60.0, 70.0), uri, "first")
+    second = log_run(*results(tmp_path / "b", "h", 60.0, 75.0), uri, "second")
+    promote(uri, first["model_version"])
+    assert champion_accuracy(uri) == 70.0
+    promote(uri, second["model_version"])
+    assert champion_accuracy(uri) == 75.0

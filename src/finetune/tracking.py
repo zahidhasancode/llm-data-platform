@@ -11,10 +11,12 @@ import json
 from pathlib import Path
 
 import mlflow
+from mlflow.exceptions import MlflowException
 from mlflow.tracking import MlflowClient
 
 EXPERIMENT = "text2sql-qlora"
 MODEL_NAME = "text2sql-qlora"
+CHAMPION = "champion"
 PARAMS = (
     "base_model",
     "dataset_hash",
@@ -70,6 +72,23 @@ def log_run(results_dir: str, adapter_dir: str, tracking_uri: str, run_name: str
         MODEL_NAME, source, run_id=run_id, tags={"dataset_hash": train["dataset_hash"]}
     )
     return {"run_id": run_id, "model_version": version.version, "dataset_hash": train["dataset_hash"]}
+
+
+def champion_accuracy(tracking_uri: str) -> float | None:
+    """Fine-tuned accuracy of the current champion, or None if there is no champion yet."""
+    client = MlflowClient(tracking_uri)
+    if not client.search_registered_models(filter_string=f"name='{MODEL_NAME}'"):
+        return None
+    try:
+        version = client.get_model_version_by_alias(MODEL_NAME, CHAMPION)
+    except MlflowException:
+        return None
+    return client.get_run(version.run_id).data.metrics["qlora_execution_accuracy"]
+
+
+def promote(tracking_uri: str, version: int) -> None:
+    """Point the champion alias at a version. The server loads whatever this alias names."""
+    MlflowClient(tracking_uri).set_registered_model_alias(MODEL_NAME, CHAMPION, version)
 
 
 def compare_runs(tracking_uri: str) -> list[dict]:

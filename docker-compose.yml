@@ -9,11 +9,50 @@ services:
       - "127.0.0.1:5432:5432"
     volumes:
       - postgres:/var/lib/postgresql/data
+      - ./infra/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U pipeline -d pipeline"]
       interval: 5s
       timeout: 3s
       retries: 10
+
+  mlflow:
+    build:
+      context: infra/airflow
+      dockerfile: mlflow.Dockerfile
+    command: >
+      mlflow server --host 0.0.0.0 --port 5000
+      --backend-store-uri postgresql://pipeline:${POSTGRES_PASSWORD}@postgres/mlflow
+      --artifacts-destination s3://${ARTIFACT_BUCKET}/mlflow
+    environment:
+      AWS_DEFAULT_REGION: eu-west-1
+    ports:
+      - "127.0.0.1:5000:5000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  airflow:
+    build: infra/airflow
+    command: standalone
+    environment:
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://pipeline:${POSTGRES_PASSWORD}@postgres/airflow
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      PYTHONPATH: /opt/project
+      ARTIFACT_BUCKET: ${ARTIFACT_BUCKET}
+      MLFLOW_TRACKING_URI: http://mlflow:5000
+      AWS_DEFAULT_REGION: eu-west-1
+    volumes:
+      - ./dags:/opt/airflow/dags:ro
+      - ./src:/opt/project/src:ro
+    ports:
+      - "127.0.0.1:8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mlflow:
+        condition: service_started
 
 volumes:
   postgres:
