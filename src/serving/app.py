@@ -14,7 +14,6 @@ from pydantic import BaseModel, Field
 
 from src.finetune.scoring import is_valid
 
-
 log = logging.getLogger(__name__)
 
 
