@@ -139,6 +139,8 @@ resource "aws_instance" "machine" {
 
   metadata_options {
     http_tokens = "required"
+    # Containers are one network hop further away, and they need the machine's role for S3.
+    http_put_response_hop_limit = 2
   }
 
   root_block_device {
