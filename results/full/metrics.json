@@ -1,0 +1,20 @@
+{
+  "dataset_hash": "cd14054cde3394c5690e0fb956af9ea21f9ae7787d83d12a1b27f86f7a42bbcd",
+  "base_model": "Qwen/Qwen2.5-1.5B-Instruct",
+  "decoding": "greedy",
+  "gpu": "Tesla T4",
+  "conditions": {
+    "base": {
+      "n": 617,
+      "execution_accuracy": 60.9,
+      "exact_match": 18.6,
+      "valid_sql_rate": 90.4
+    },
+    "qlora": {
+      "n": 617,
+      "execution_accuracy": 69.4,
+      "exact_match": 35.5,
+      "valid_sql_rate": 97.7
+    }
+  }
+}

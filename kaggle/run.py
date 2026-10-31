@@ -33,7 +33,8 @@ sh(sys.executable, "-m", "pip", "install", "-q",
 shutil.copytree(find_code(), f"{WORK}/repo", dirs_exist_ok=True)
 os.chdir(f"{WORK}/repo")
 sh("nvidia-smi")
-sh(sys.executable, "-m", "src.finetune.train", "--data", "dataset")
+EPOCHS = "1.0"
+sh(sys.executable, "-m", "src.finetune.train", "--data", "dataset", "--epochs", EPOCHS)
 sh(sys.executable, "-m", "src.finetune.evaluate", "--data", "dataset")
 
 out = f"{WORK}/outputs"
