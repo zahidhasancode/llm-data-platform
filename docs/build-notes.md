@@ -47,3 +47,67 @@ hash. Full details are in `results/data_text2sql.json`.
    with reasons can be counted and checked.
 3. **Why sort before hashing?** Spark gives no row order guarantee, so without sorting the same
    data could produce a different hash.
+
+## Task 4: MLflow
+
+**What was built:** every finished run records its settings, loss curve, accuracy and adapter, and each
+registered version stores its dataset hash. Results with a missing or mismatched hash are refused.
+
+**Main tradeoff:** MLflow only reads results written by real runs and computes nothing, so it cannot
+show a number nobody measured.
+
+### Interview questions
+
+1. **Why an alias for the champion?** The server follows the alias, so promotion and rollback change
+   one pointer and need no code change.
+2. **Why store the dataset hash on the version?** Months later you can name the exact data behind a model.
+3. **What is the difference between a run and a model version?** A run is one experiment; a version
+   is a run's output that was registered for possible use.
+
+## Task 5: Airflow
+
+**What was built:** a DAG that fetches a run from S3, records it, gates it and promotes it, with
+retries and an alert. Tested on AWS: a missing run failed on all 3 attempts, the alert fired, and
+later tasks did not run. A real promote and a real block still need real results.
+
+**Main tradeoff:** training stays on Kaggle, so the DAG starts from its results instead of starting
+training itself. That is cheap, but the first stage is manual.
+
+### Interview questions
+
+1. **Why is a block a skip, not a failure?** Nothing broke; the gate did its job. A failure should
+   mean someone needs to look.
+2. **Why compare with the champion as well as the base model?** A model can beat the base and still
+   be worse than what is live.
+3. **Why separate databases for Airflow and MLflow?** Each manages its own tables, and they clash in one.
+
+## Task 6: Docker and Kubernetes
+
+**What was built:** a FastAPI server, an image in ECR and a two-replica Deployment on `kind`. Tested
+on AWS: 30 requests during an update from v1 to v2, 0 failed, both versions seen.
+
+**Main tradeoff:** `kind` on one machine shows Kubernetes behaviour cheaply but gives no real node
+failure. CPU serving is slow, about 13 s per request, and only suits a demonstration.
+
+### Interview questions
+
+1. **What makes the update safe?** `maxUnavailable: 0` keeps capacity up, and traffic reaches a new
+   pod only after its readiness probe passes.
+2. **Why the `preStop` wait?** A pod can keep receiving traffic briefly after it starts to stop, so
+   it keeps serving until the Service has removed it.
+3. **Why does this test prove little about production?** It is one node, low traffic and 30 requests.
+
+## Task 7: Kafka
+
+**What was built:** the evaluation platform consumes events and stores them. Tested on a real broker:
+300 sent, consumer killed with SIGKILL after 52 were stored, exactly 300 stored after restart.
+
+**Main tradeoff:** at-least-once delivery means duplicates can arrive, so the event id is the primary
+key and a repeat does nothing.
+
+### Interview questions
+
+1. **Why commit the offset after the database write?** A crash then repeats work instead of losing it.
+2. **Why does skipping the commit alone not save a failed event?** The next poll returns the next
+   message, and committing that moves past the failure, so the consumer must seek back.
+3. **Is this exactly-once?** No. It is at-least-once delivery with an idempotent write.

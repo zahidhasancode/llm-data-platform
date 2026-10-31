@@ -1,0 +1,12 @@
+{
+  "date": "2026-10-31",
+  "hardware": "AWS t3.xlarge, eu-west-1, one-node kind cluster v1.32.0, 2 replicas on CPU",
+  "model": "Qwen2.5-1.5B-Instruct with an adapter from the earlier text2sql-qlora run, bfloat16",
+  "image_source": "ECR, pushed and pulled in this test",
+  "test": "2 clients sending requests for 200 s; update from v1 to v2 started at 30 s",
+  "requests": 30,
+  "failed": 0,
+  "versions_seen": ["v1", "v2"],
+  "median_seconds_per_request": 12.84,
+  "note": "Small sample at low traffic. An earlier run was discarded because a script bug hid the version label."
+}

@@ -18,6 +18,10 @@ This is a **prototype**, not a working training system.
 | Training | **Simulated.** No model is downloaded or trained. Only metadata is written. |
 | Evaluation | **Simulated.** Metrics are derived from a hash of the version names. They are not measurements. |
 | `src/agent/`, `src/deployment/` | Empty placeholders |
+| Quality gate and Airflow pipeline (`dags/`) | Code tested; failure handling tested on AWS. Real promote not run yet |
+| MLflow tracking (`src/finetune/tracking.py`) | Tested with test data; real run pending |
+| Model server and Kubernetes (`src/serving/`, `k8s/`) | Tested on AWS: [rolling update](results/rolling_update.json), 30 requests, 0 failed |
+| Kafka events | Tested on a real broker: [restart test](results/kafka_restart.json), 300 of 300 stored |
 
 ## What it does
 
