@@ -43,3 +43,28 @@ def test_rolling_update_never_removes_capacity() -> None:
     container = deployment["spec"]["template"]["spec"]["containers"][0]
     assert container["readinessProbe"]["httpGet"]["path"] == "/health"
     assert container["resources"]["limits"]["memory"]
+
+
+BODY = {"question": "Q", "context": "CREATE TABLE t (a INT);"}
+
+
+def test_each_answer_publishes_an_event_with_its_validity() -> None:
+    events: list[dict] = []
+    app = create_app(lambda c, q: "SELECT a FROM t;", "7", events.append)
+    TestClient(app).post("/v1/sql", json=BODY)
+    assert events[0]["model_version"] == "7"
+    assert events[0]["response"]["metadata"] == {"valid_sql": True}
+
+
+def test_broken_sql_is_reported_as_invalid() -> None:
+    events: list[dict] = []
+    TestClient(create_app(lambda c, q: "SELEC", "7", events.append)).post("/v1/sql", json=BODY)
+    assert events[0]["response"]["metadata"] == {"valid_sql": False}
+
+
+def test_a_publish_failure_does_not_break_the_answer() -> None:
+    def fail(event: dict) -> None:
+        raise ConnectionError("no broker")
+
+    response = TestClient(create_app(lambda c, q: "SELECT 1;", "7", fail)).post("/v1/sql", json=BODY)
+    assert response.json()["sql"] == "SELECT 1;"

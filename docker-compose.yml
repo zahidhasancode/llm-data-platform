@@ -42,6 +42,7 @@ services:
       PYTHONPATH: /opt/project
       ARTIFACT_BUCKET: ${ARTIFACT_BUCKET}
       MLFLOW_TRACKING_URI: http://mlflow:5000
+      EVAL_DATABASE_URL: postgresql://pipeline:${POSTGRES_PASSWORD}@postgres/llm_eval
       AWS_DEFAULT_REGION: eu-west-1
     volumes:
       - ./dags:/opt/airflow/dags:ro

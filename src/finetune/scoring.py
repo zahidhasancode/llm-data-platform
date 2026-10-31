@@ -5,7 +5,7 @@ from __future__ import annotations
 from src.finetune.sqlcheck import execution_match, extract_sql, normalize, run
 
 
-def _valid(context: str, sql: str) -> bool:
+def is_valid(context: str, sql: str) -> bool:
     try:
         run(context, sql)
         return True
@@ -27,7 +27,7 @@ def score(rows: list[dict], raw: list[str]) -> tuple[dict, list[dict]]:
                 "pred": sql,
                 "exec_match": execution_match(row["context"], row["sql"], sql),
                 "exact": normalize(sql) == normalize(row["sql"]),
-                "valid": _valid(row["context"], sql),
+                "valid": is_valid(row["context"], sql),
             }
         )
     n = len(rows)
