@@ -1,0 +1,12 @@
+{
+  "date": "2026-10-31",
+  "hardware": "AWS t3.xlarge, eu-west-1, one-node kind cluster, 2 replicas on CPU",
+  "model": "Qwen2.5-1.5B-Instruct with the adapter from results/full, bfloat16",
+  "test": "2 clients for 150 s; one pod force-deleted at 30 s",
+  "requests": 18,
+  "failed": 1,
+  "failure": "RemoteDisconnected: the request in progress on the killed pod",
+  "seconds_until_two_pods_ready": 12,
+  "median_seconds_per_request": 13.91,
+  "note": "The model was already in the disk cache, so recovery would be slower on a fresh machine."
+}
