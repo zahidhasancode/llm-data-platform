@@ -4,3 +4,5 @@ ruff>=0.5
 pyspark==4.0.1
 mlflow==2.22.0
 sqlalchemy<2.1
+fastapi==0.115.6
+httpx

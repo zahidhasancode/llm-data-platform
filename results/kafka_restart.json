@@ -1,0 +1,9 @@
+{
+  "date": "2026-10-31",
+  "hardware": "AWS t3.xlarge, eu-west-1, one Kafka 3.9.0 broker, PostgreSQL 16",
+  "test": "300 valid events and 1 invalid event published; consumer killed with SIGKILL, then restarted",
+  "sent": 300,
+  "stored_when_killed": 52,
+  "stored_at_end": 300,
+  "invalid_event": "rejected at offset 300"
+}
