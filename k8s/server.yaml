@@ -26,6 +26,10 @@ spec:
           env:
             - name: MODEL_VERSION
               value: "VERSION"
+            - name: HF_HOME
+              value: /models/hf
+            - name: HF_HUB_OFFLINE
+              value: "1"
           ports:
             - containerPort: 8000
           readinessProbe:
