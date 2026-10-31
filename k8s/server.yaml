@@ -22,10 +22,10 @@ spec:
         - name: ecr
       containers:
         - name: server
-          image: IMAGE
+          image: __IMAGE__
           env:
             - name: MODEL_VERSION
-              value: "VERSION"
+              value: "__VERSION__"
             - name: HF_HOME
               value: /models/hf
             - name: HF_HUB_OFFLINE
