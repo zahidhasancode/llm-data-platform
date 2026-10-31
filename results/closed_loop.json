@@ -1,0 +1,8 @@
+{
+  "date": "2026-10-31",
+  "hardware": "AWS t3.xlarge, eu-west-1; Kafka 3.9.0, PostgreSQL 16, Airflow 2.10.5, MLflow 2.22.0",
+  "test": "60 valid events, monitor run, then 60 invalid events, monitor run",
+  "after_healthy_traffic": {"valid_rate": 100.0, "dropped": false, "pipeline_started": false},
+  "after_planted_drop": {"pipeline_started": true, "champion_version_before": 1, "champion_version_after": 2},
+  "limit": "The drop was planted, and the pipeline promoted a stored copy of the real run. It did not start new training."
+}

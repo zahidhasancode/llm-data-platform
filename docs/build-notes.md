@@ -111,3 +111,28 @@ key and a repeat does nothing.
 2. **Why does skipping the commit alone not save a failed event?** The next poll returns the next
    message, and committing that moves past the failure, so the consumer must seek back.
 3. **Is this exactly-once?** No. It is at-least-once delivery with an idempotent write.
+
+## Task 3: real training
+
+**What was built:** real QLoRA training on the versioned dataset, on one Kaggle T4. It refuses data
+whose hash does not match.
+
+**Measured on 2026-10-31:** 5,077 training rows, 131.6 minutes. On 617 held-out questions, execution
+accuracy rose from 60.9% to 69.4%, and valid SQL from 90.4% to 97.7%. One seed only.
+
+## Task 8: closed loop
+
+**What was built:** the server reports whether each answer's SQL runs, and a monitor starts the
+pipeline when the valid-SQL rate falls too far.
+
+**Tested on AWS:** 60 healthy events started nothing. 60 planted bad events started the pipeline,
+and the champion moved from version 1 to 2.
+
+**Main tradeoff and limit:** valid SQL is a cheap signal, not correctness. The pipeline promoted a
+stored run, so the loop does not yet start real training.
+
+### Interview questions
+
+1. **Why require a minimum sample?** A few bad answers should not start an expensive retrain.
+2. **Why is valid SQL a weak signal?** A query can run and still answer the wrong question.
+3. **What is missing before production?** Automatic training, a rollback, and a cooldown between runs.
