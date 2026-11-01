@@ -5,6 +5,10 @@ data, QLoRA fine-tunes a model, MLflow records it, Airflow gates and promotes it
 it, and Kafka carries live quality data back. Personal project, built in 2026. It is a learning
 system, not a production service.
 
+![Animated summary of the measured results](docs/media/pipeline.gif)
+
+*Animated summary, built by `scripts/make_media.py` from the result files in this repository. It is not a screen recording.*
+
 | | |
 |---|---|
 | **Model result** | Execution accuracy rose from 60.9% to 69.4% on 617 held-out questions; valid SQL from 90.4% to 97.7% ([results](results/full/metrics.json)) |
@@ -13,6 +17,8 @@ system, not a production service.
 | **Pod killed** | 1 of 18 requests failed, the one in progress; 2 pods ready after 12 s ([results](results/pod_kill.json)) |
 | **Kafka consumer killed** | 300 sent, killed after 52 stored, exactly 300 stored after restart ([results](results/kafka_restart.json)) |
 | **Hardware** | Kaggle T4 for training; one AWS `t3.xlarge` for everything else; about 13 s per request on CPU |
+
+![Execution accuracy of the three models](docs/media/accuracy.png)
 
 ```text
 raw data → Spark → QLoRA on Kaggle → evaluation → gate → MLflow champion
