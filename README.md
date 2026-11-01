@@ -1,10 +1,41 @@
 # LLM Data Platform
 
-A small Python prototype for preparing fine-tuning data for LLMs: it loads raw Q&A files, cleans them with fixed rules, and writes versioned datasets with a content hash. A second stage records training runs in a model registry, but training and evaluation are simulated.
+An LLM pipeline built end to end to learn how the parts fit together: Spark prepares and versions
+data, QLoRA fine-tunes a model, MLflow records it, Airflow gates and promotes it, Kubernetes serves
+it, and Kafka carries live quality data back. Personal project, built in 2026. It is a learning
+system, not a production service.
+
+| | |
+|---|---|
+| **Model result** | Execution accuracy rose from 60.9% to 69.4% on 617 held-out questions; valid SQL from 90.4% to 97.7% ([results](results/full/metrics.json)) |
+| **Quality gate** | A real weak run (57.4%) was blocked; the real full run was promoted |
+| **Rolling update** | 30 requests during an update, 0 failed ([results](results/rolling_update.json)) |
+| **Pod killed** | 1 of 18 requests failed, the one in progress; 2 pods ready after 12 s ([results](results/pod_kill.json)) |
+| **Kafka consumer killed** | 300 sent, killed after 52 stored, exactly 300 stored after restart ([results](results/kafka_restart.json)) |
+| **Hardware** | Kaggle T4 for training; one AWS `t3.xlarge` for everything else; about 13 s per request on CPU |
+
+```text
+raw data → Spark → QLoRA on Kaggle → evaluation → gate → MLflow champion
+                         ↑                                      ↓
+              quality drop starts a run                   Kubernetes server
+                         ↑                                      ↓
+              evaluation platform   ←   Kafka   ←   request events
+```
+
+Details: [architecture](docs/ARCHITECTURE.md) · [build notes and interview questions](docs/build-notes.md).
+
+## Honest limits
+
+- One full training run and one seed, on a synthetic dataset with small schemas.
+- The closed-loop test used a planted drop, and the pipeline promoted a stored run. Airflow does
+  not start Kaggle training yet.
+- The monitor has no cooldown: while quality stayed low it started the pipeline a second time.
+- One gate block created an extra model version, so the record step is not yet safe to retry.
+- The server's event publishing is tested in code, but the live test planted events directly.
+- One machine, low traffic and small samples. Nothing here measures production load.
+- The older YAML trainer in `src/training/` is still simulated.
 
 ## Status
-
-This is a **prototype**, not a working training system.
 
 | Part | State |
 | --- | --- |

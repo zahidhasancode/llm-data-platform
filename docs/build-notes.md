@@ -136,3 +136,17 @@ stored run, so the loop does not yet start real training.
 1. **Why require a minimum sample?** A few bad answers should not start an expensive retrain.
 2. **Why is valid SQL a weak signal?** A query can run and still answer the wrong question.
 3. **What is missing before production?** Automatic training, a rollback, and a cooldown between runs.
+
+## Task 9: failure tests
+
+Consumer killed: 300 of 300 stored. Pod killed: 1 of 18 requests failed. A failed run: 3 attempts,
+then an alert. A real weak run (57.4%): blocked for gain and for falling below the champion.
+
+**Found by testing:** the monitor has no cooldown, so a lasting drop starts repeated runs.
+
+### Interview questions
+
+1. **Why did one request fail when a pod died?** It was in progress on that pod. Retries belong in
+   the client, and only for requests that are safe to repeat.
+2. **Why plant a real weak model instead of fake numbers?** It tests the gate on real output.
+3. **What would you fix first?** A cooldown, then making the record step safe to retry.

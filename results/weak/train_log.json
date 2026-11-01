@@ -1,0 +1,26 @@
+{
+ "base_model": "Qwen/Qwen2.5-1.5B-Instruct",
+ "dataset_hash": "cd14054cde3394c5690e0fb956af9ea21f9ae7787d83d12a1b27f86f7a42bbcd",
+ "train_examples": 5077,
+ "val_examples": 306,
+ "epochs": 0.02,
+ "learning_rate": 0.0002,
+ "lora_rank": 16,
+ "effective_batch": 16,
+ "max_len": 1024,
+ "precision": "bf16",
+ "gpu": "Tesla T4",
+ "trainable_params": 18464768,
+ "train_minutes": 2.6,
+ "log_history": [
+  {
+   "train_runtime": 158.213,
+   "train_samples_per_second": 0.642,
+   "train_steps_per_second": 0.044,
+   "total_flos": 246838886645760.0,
+   "train_loss": 0.283151422228132,
+   "epoch": 0.02204724409448819,
+   "step": 7
+  }
+ ]
+}
