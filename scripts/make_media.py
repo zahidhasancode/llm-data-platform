@@ -29,7 +29,8 @@ base, tuned, short = (
 )
 
 fig, ax = plt.subplots(figsize=(7.2, 3.1), dpi=150)
-labels = [f"Short run\n({training['train_examples'] * 2 // 100:,} rows, blocked)", "Base model", "Full QLoRA run\n(promoted)"]
+short_rows = training["train_examples"] * 2 // 100
+labels = [f"Short run\n({short_rows:,} rows, blocked)", "Base model", "Full QLoRA run\n(promoted)"]
 bars = ax.barh(labels, [short, base, tuned], color=[BAD, "#9aa5b1", GOOD], height=0.58)
 for bar, value in zip(bars, [short, base, tuned], strict=True):
     ax.text(value + 1, bar.get_y() + bar.get_height() / 2, f"{value}%", va="center", color=INK, fontweight="bold")
@@ -65,7 +66,8 @@ def frame(active: int) -> Image.Image:
     for i, (stage, tool, result) in enumerate(STAGES):
         y = 92 + i * 51
         on = i <= active
-        draw.rounded_rectangle((28, y, 832, y + BOX_H), 7, fill="#eef2f8" if on else "#f7f8fa", outline=ACCENT if i == active else LINE, width=2)
+        fill, edge = ("#eef2f8" if on else "#f7f8fa"), (ACCENT if i == active else LINE)
+        draw.rounded_rectangle((28, y, 832, y + BOX_H), 7, fill=fill, outline=edge, width=2)
         draw.text((46, y + 12), stage, fill=INK if on else "#aab2bc", font=font(18, True))
         draw.text((190, y + 13), tool, fill=MUTED if on else "#c3c9d0", font=font(16))
         if on:
@@ -74,4 +76,5 @@ def frame(active: int) -> Image.Image:
 
 
 frames = [frame(i) for i in range(len(STAGES))]
-frames[0].save(OUT / "pipeline.gif", save_all=True, append_images=frames[1:], duration=[1100] * 6 + [4000], loop=0, optimize=True)
+durations = [1100] * 6 + [4000]
+frames[0].save(OUT / "pipeline.gif", save_all=True, append_images=frames[1:], duration=durations, loop=0, optimize=True)
